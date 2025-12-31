@@ -42,14 +42,17 @@ git clone https://github.com/sureshgururajan/aws-console-private-access-setup.gi
 cd aws-console-private-access-setup
 ```
 
-### 2. Install Dependencies
+### 2. Install Dependencies and Build
 
-Install both the CDK project and MCP server dependencies:
+Install both the CDK project and MCP server dependencies, then build the MCP server:
 
 ```bash
 npm install
 npm run install:mcp
+npm run build:mcp
 ```
+
+The build step compiles the TypeScript MCP server to JavaScript in the `mcp-server/dist/` directory.
 
 ### 3. Specify Your EC2 Keypair (Optional)
 
