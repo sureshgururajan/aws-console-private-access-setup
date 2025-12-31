@@ -1,6 +1,6 @@
 {
   "name": "@sureshgururajan/aws-console-private-access-validator",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "type": "module",
   "description": "MCP server for validating AWS Console Private Access CloudFormation templates",
   "main": "dist/index.js",
