@@ -51,12 +51,27 @@ npm install
 npm run install:mcp
 ```
 
-### 3. Synthesize the CloudFormation Template
+### 3. Specify Your EC2 Keypair (Optional)
+
+If you want RDP access to the Windows instance, identify an existing EC2 keypair in your AWS account:
+
+```bash
+# List available keypairs in your account
+aws ec2 describe-key-pairs --query 'KeyPairs[].KeyName' --output text
+```
+
+Note the keypair name - you'll use it in the next steps.
+
+### 4. Synthesize the CloudFormation Template
 
 Generate the CloudFormation template from the CDK code:
 
 ```bash
+# Without keypair (instance only accessible via Systems Manager)
 npx cdk synth
+
+# With keypair (for RDP access)
+npx cdk synth -c ec2KeyPair=your-keypair-name
 ```
 
 This creates a `cdk.out/` directory with the synthesized template.
@@ -98,9 +113,9 @@ The validator returns a detailed report of all checks with pass/fail/warning sta
 
 ## Deployment
 
-### Basic Deployment
+### Basic Deployment (Without EC2 Keypair)
 
-Deploy the stack to your AWS account without an EC2 keypair:
+Deploy the stack without an EC2 keypair. The instance will only be accessible via AWS Systems Manager Session Manager:
 
 ```bash
 npx cdk deploy
@@ -108,26 +123,21 @@ npx cdk deploy
 
 ### Deployment with EC2 Keypair
 
-If you want RDP access to the Windows instance, specify an existing EC2 keypair:
+If you want RDP access to the Windows instance, deploy with your keypair name:
 
 ```bash
-npx cdk deploy -c ec2KeyPair=my-keypair-name
+npx cdk deploy -c ec2KeyPair=your-keypair-name
 ```
 
-Or set it as an environment variable:
-
-```bash
-export EC2_KEY_PAIR=my-keypair-name
-npx cdk deploy
-```
+Replace `your-keypair-name` with the actual keypair name from your AWS account.
 
 ### Custom Parameters
 
-Customize the deployment with context values:
+Customize the deployment with additional context values:
 
 ```bash
 npx cdk deploy \
-  -c ec2KeyPair=my-keypair \
+  -c ec2KeyPair=your-keypair-name \
   -c vpcCidr=10.0.0.0/16 \
   -c instanceType=t3.large
 ```
