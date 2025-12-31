@@ -101,17 +101,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 });
 
 async function main() {
-  try {
-    const transport = new StdioServerTransport();
-    await server.connect(transport);
-    console.error('MCP server connected');
-  } catch (error) {
-    console.error('Failed to start MCP server:', error);
-    process.exit(1);
-  }
+  const transport = new StdioServerTransport();
+  await server.connect(transport);
 }
 
 main().catch((error) => {
-  console.error('Unhandled error:', error);
   process.exit(1);
 });
