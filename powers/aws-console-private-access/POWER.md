@@ -106,13 +106,13 @@ npx cdk synth --region $AWS_REGION -c ec2KeyPair=your-keypair-name
 
 This creates a `cdk.out/` directory with the synthesized template.
 
-### 6. Validate the Configuration
+### 6. Validate the Configuration (Optional)
 
-The MCP server is automatically available in Kiro once the power is installed. You can use the `validate-cloudformation` tool directly to check your synthesized template against all private access requirements.
+Once you've synthesized your CloudFormation template, you can use the MCP server's `validate-cloudformation` tool to check your template against all private access requirements. This is optional but recommended before deployment.
 
 ## Validation
 
-The included MCP server validates your CloudFormation template against these requirements:
+The included MCP server provides a `validate-cloudformation` tool that validates your CloudFormation template against these requirements:
 
 ### Validation Checks
 
@@ -124,15 +124,9 @@ The included MCP server validates your CloudFormation template against these req
 - **NAT Gateway** - Verifies NAT Gateway exists for outbound access
 - **Network Routing** - Checks that private subnets route to VPC endpoints and NAT Gateway
 
-### Running Validation
+### Using the Validator
 
-The MCP server runs automatically in Kiro. Use the `validate-cloudformation` tool with your synthesized template:
-
-```bash
-# The validator will check your cdk.out/ConsolePrivateAccessStack.json template
-```
-
-The validator returns a detailed report of all checks with pass/fail/warning status and actionable messages for any issues.
+When you're ready to validate your synthesized template, you can ask me to run the validator with your CloudFormation template path. The validator will return a detailed report of all checks with pass/fail/warning status and actionable messages for any issues.
 
 ## Deployment
 
