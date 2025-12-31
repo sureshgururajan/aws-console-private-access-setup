@@ -16,30 +16,6 @@ keywords:
 
 # AWS Console Private Access
 
-## ⚠️ Important: Setup Required
-
-After installing this power, you **must** run these commands in the power's directory to build the MCP server:
-
-```bash
-npm install
-npm run install:mcp
-npm run build:mcp
-```
-
-Without running these commands, the MCP server will not start and you'll see connection errors.
-
-## Setup Instructions
-
-After installing this power, run the following commands to complete setup:
-
-```bash
-npm install
-npm run install:mcp
-npm run build:mcp
-```
-
-This installs dependencies and builds the MCP server. The MCP server will then be available for use.
-
 ## Overview
 
 AWS Console Private Access enables you to access the AWS Management Console and Signin services through VPC endpoints, keeping all traffic within your AWS network without routing through the public internet. This is essential for organizations with strict security and compliance requirements.
@@ -67,7 +43,13 @@ Before getting started, ensure you have:
 
 ## Quick Start
 
-### 1. Clone the Repository
+### 1. Install the Power
+
+This power is installed directly from GitHub. Once installed in Kiro, the MCP server will automatically be available.
+
+### 2. Clone the Repository (for CDK deployment)
+
+To deploy the AWS Console Private Access infrastructure, clone the repository:
 
 ```bash
 git clone https://github.com/sureshgururajan/aws-console-private-access-setup.git
@@ -111,12 +93,11 @@ npx cdk synth -c ec2KeyPair=your-keypair-name
 
 This creates a `cdk.out/` directory with the synthesized template.
 
-### 4. Validate the Configuration
+### 5. Validate the Configuration
 
 Before deploying, validate that your configuration meets all private access requirements using the MCP validator:
 
 ```bash
-npm run build:mcp
 npm run start:mcp
 ```
 
