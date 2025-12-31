@@ -224,10 +224,7 @@ export class AwsConsolePrivateAccessSetupStack extends cdk.Stack {
     // EC2 Instance
     const instance = new ec2.Instance(this, 'EC2WinInstance', {
       vpc,
-      instanceType: ec2.InstanceType.of(
-        ec2.InstanceClass.T3,
-        ec2.InstanceSize.MEDIUM
-      ),
+      instanceType: ec2.InstanceType.of(ec2.InstanceClass.T3, ec2.InstanceSize.MEDIUM),
       machineImage: ami,
       role: ec2Role,
       securityGroup: ec2SG,
@@ -240,7 +237,7 @@ export class AwsConsolePrivateAccessSetupStack extends cdk.Stack {
           volume: ec2.BlockDeviceVolume.ebs(50),
         },
       ],
-      keyName: ec2KeyPair || undefined,
+      keyPair: ec2KeyPair ? ec2.KeyPair.fromKeyPairName(this, 'KeyPair', ec2KeyPair) : undefined,
     });
 
     instance.node.addMetadata('aws:cdk:enable-path-metadata', true);

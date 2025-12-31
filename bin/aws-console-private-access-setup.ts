@@ -3,7 +3,16 @@ import * as cdk from 'aws-cdk-lib';
 import { AwsConsolePrivateAccessSetupStack } from '../lib/aws-console-private-access-setup-stack';
 
 const app = new cdk.App();
+
+// Get parameters from context
+const ec2KeyPair = app.node.tryGetContext('ec2KeyPair');
+const vpcCidr = app.node.tryGetContext('vpcCidr');
+const instanceType = app.node.tryGetContext('instanceType');
+
 new AwsConsolePrivateAccessSetupStack(app, 'AwsConsolePrivateAccessSetupStack', {
+  ec2KeyPair,
+  vpcCidr,
+  instanceType,
   /* If you don't specify 'env', this stack will be environment-agnostic.
    * Account/Region-dependent features and context lookups will not work,
    * but a single synthesized template can be deployed anywhere. */
