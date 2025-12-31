@@ -44,9 +44,6 @@ node --version
 # Check npm version
 npm --version
 
-# Check TypeScript version
-npx tsc --version
-
 # Check AWS CDK version
 cdk --version
 
@@ -62,9 +59,6 @@ If any of the above commands fail, install the missing tools:
 # Install Node.js 18+ (if needed)
 # On macOS with Homebrew:
 brew install node
-
-# Install TypeScript globally (if needed)
-npm install -g typescript
 
 # Install AWS CDK CLI globally (if needed)
 npm install -g aws-cdk
