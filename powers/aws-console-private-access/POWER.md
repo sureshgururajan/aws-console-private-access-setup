@@ -4,6 +4,16 @@ displayName: "AWS Console Private Access"
 description: "Set up secure AWS Management Console access through VPC endpoints without routing through the public internet. Includes CloudFormation validation to ensure your configuration meets private access requirements."
 keywords: ["aws", "console", "private-access", "vpc-endpoints", "cloudformation", "validation", "cdk"]
 author: "Suresh Gururajan"
+setupInstructions: |
+  After installing this power, run the following commands to complete setup:
+  
+  ```bash
+  npm install
+  npm run install:mcp
+  npm run build:mcp
+  ```
+  
+  This installs dependencies and builds the MCP server. The MCP server will then be available for use.
 ---
 
 # AWS Console Private Access
