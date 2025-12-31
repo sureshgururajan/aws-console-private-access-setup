@@ -43,17 +43,7 @@ Before getting started, ensure you have:
 
 ## Quick Start
 
-### 1. Install the Power
-
-This power is installed directly from the GitHub repository. Once installed in Kiro, the MCP server will automatically be available - no additional setup required.
-
-To install the power in Kiro:
-1. Open the Kiro Powers panel
-2. Click "Install from URL" 
-3. Enter: `https://github.com/sureshgururajan/aws-console-private-access-setup`
-4. The power will be installed with the MCP server automatically configured
-
-### 2. Clone the Repository (for CDK deployment)
+### 1. Clone the Repository
 
 To deploy the AWS Console Private Access infrastructure, clone the repository:
 
@@ -63,9 +53,9 @@ cd aws-console-private-access-setup
 npm install
 ```
 
-### 3. Choose Your AWS Region
+### 2. Choose Your AWS Region
 
-Decide which AWS region you want to deploy to. This will be used for all AWS CLI commands and CDK deployment:
+Decide which AWS region you want to deploy to:
 
 ```bash
 # Set your preferred region (replace with your choice)
@@ -81,7 +71,7 @@ Common regions:
 - `eu-west-1` (Ireland)
 - `ap-southeast-1` (Singapore)
 
-### 4. Specify Your EC2 Keypair (Optional)
+### 3. Specify Your EC2 Keypair (Optional)
 
 If you want RDP access to the Windows instance, identify an existing EC2 keypair in your AWS account:
 
@@ -92,29 +82,25 @@ aws ec2 describe-key-pairs --region $AWS_REGION --query 'KeyPairs[].KeyName' --o
 
 Note the keypair name - you'll use it in the next steps.
 
-### 5. Synthesize the CloudFormation Template
+### 4. Deploy the Infrastructure
 
-Generate the CloudFormation template from the CDK code:
+Deploy the stack to your AWS account:
 
 ```bash
 # Without keypair (instance only accessible via Systems Manager)
-npx cdk synth --region $AWS_REGION
+npx cdk deploy --region $AWS_REGION
 
 # With keypair (for RDP access)
-npx cdk synth --region $AWS_REGION -c ec2KeyPair=your-keypair-name
+npx cdk deploy --region $AWS_REGION -c ec2KeyPair=your-keypair-name
 ```
 
-This creates a `cdk.out/` directory with the synthesized template.
+This creates all the necessary VPC endpoints, Route53 zones, security groups, and EC2 instance for private console access.
 
-### 6. Validate the Configuration (Optional)
+## Validation (Optional)
 
-Once you've synthesized your CloudFormation template, you can use the MCP server's `validate-cloudformation` tool to check your template against all private access requirements. This is optional but recommended before deployment.
+If you want to validate your CloudFormation template before or after deployment, this power includes an MCP server with a `validate-cloudformation` tool. This is optional—you don't need to use it to deploy successfully.
 
-## Validation
-
-The included MCP server provides a `validate-cloudformation` tool that validates your CloudFormation template against these requirements:
-
-### Validation Checks
+### What the Validator Checks
 
 - **VPC Endpoints** - Verifies all required endpoints exist (Console, Signin, SSM, EC2Messages, SSMMessages, S3)
 - **Endpoint Policies** - Ensures policies allow access to AWS Console APIs
@@ -126,43 +112,11 @@ The included MCP server provides a `validate-cloudformation` tool that validates
 
 ### Using the Validator
 
-When you're ready to validate your synthesized template, you can ask me to run the validator with your CloudFormation template path. The validator will return a detailed report of all checks with pass/fail/warning status and actionable messages for any issues.
+To validate your configuration, ask me to validate your CloudFormation template. I can check either:
+- Your synthesized template before deployment: `cdk.out/ConsolePrivateAccessStack.json`
+- Your deployed stack after deployment
 
-## Deployment
-
-### Basic Deployment (Without EC2 Keypair)
-
-Deploy the stack without an EC2 keypair. The instance will only be accessible via AWS Systems Manager Session Manager:
-
-```bash
-npx cdk deploy --region $AWS_REGION
-```
-
-### Deployment with EC2 Keypair
-
-If you want RDP access to the Windows instance, deploy with your keypair name:
-
-```bash
-npx cdk deploy --region $AWS_REGION -c ec2KeyPair=your-keypair-name
-```
-
-Replace `your-keypair-name` with the actual keypair name from your AWS account.
-
-### Custom Parameters
-
-Customize the deployment with additional context values:
-
-```bash
-npx cdk deploy --region $AWS_REGION \
-  -c ec2KeyPair=your-keypair-name \
-  -c vpcCidr=10.0.0.0/16 \
-  -c instanceType=t3.large
-```
-
-**Available Parameters:**
-- `ec2KeyPair` - Name of existing EC2 keypair (default: none)
-- `vpcCidr` - CIDR block for the VPC (default: 172.16.0.0/16)
-- `instanceType` - EC2 instance type (default: t3.medium)
+The validator will return a detailed report with pass/fail/warning status and actionable messages for any issues.
 
 ## Testing Console Access
 
