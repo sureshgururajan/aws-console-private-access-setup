@@ -1,11 +1,13 @@
 {
   "name": "aws-console-private-access-validator",
   "version": "1.0.0",
+  "type": "module",
   "description": "MCP server for validating AWS Console Private Access CloudFormation templates",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
+    "test": "node dist/test.js",
     "dev": "ts-node src/index.ts"
   },
   "dependencies": {
