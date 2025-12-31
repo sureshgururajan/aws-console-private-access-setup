@@ -2,10 +2,11 @@
   "mcpServers": {
     "aws-console-private-access-validator": {
       "command": "node",
-      "args": ["mcp-server/dist/index.js"],
+      "args": ["${workspaceFolder}/mcp-server/dist/index.js"],
       "env": {
         "NODE_ENV": "production"
       }
     }
   }
 }
+
