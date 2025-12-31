@@ -1,14 +1,12 @@
 {
   "mcpServers": {
     "aws-console-private-access-validator": {
-      "command": "node",
-      "args": ["../../mcp-server/dist/index.js"],
-      "env": {
-        "NODE_ENV": "production"
-      }
+      "command": "uvx",
+      "args": ["@sureshgururajan/aws-console-private-access-validator@latest"]
     }
   }
 }
+
 
 
 
