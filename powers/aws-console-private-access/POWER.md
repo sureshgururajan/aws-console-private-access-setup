@@ -118,6 +118,42 @@ To validate your configuration, ask me to validate your CloudFormation template.
 
 The validator will return a detailed report with pass/fail/warning status and actionable messages for any issues.
 
+## Next Steps After Validation
+
+Once validation passes, you have several options:
+
+### Option 1: Deploy to AWS
+
+Ready to deploy? Run:
+
+```bash
+# Without keypair
+npx cdk deploy --region $AWS_REGION
+
+# With keypair
+npx cdk deploy --region $AWS_REGION -c ec2KeyPair=your-keypair-name
+```
+
+### Option 2: Customize Your Configuration
+
+Want to adjust parameters before deploying? You can customize:
+
+```bash
+npx cdk deploy --region $AWS_REGION \
+  -c ec2KeyPair=your-keypair-name \
+  -c vpcCidr=10.0.0.0/16 \
+  -c instanceType=t3.large
+```
+
+**Available Parameters:**
+- `ec2KeyPair` - Name of existing EC2 keypair (default: none)
+- `vpcCidr` - CIDR block for the VPC (default: 172.16.0.0/16)
+- `instanceType` - EC2 instance type (default: t3.medium)
+
+### Option 3: Review the Architecture
+
+Want to understand what you're deploying? Check the [Architecture Details](#architecture-details) section below.
+
 ## Testing Console Access
 
 ### Connect to the EC2 Instance
