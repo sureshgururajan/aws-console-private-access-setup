@@ -18,7 +18,7 @@ keywords:
 
 ## Overview
 
-AWS Console Private Access enables you to access the AWS Management Console and Signin services through VPC endpoints, keeping all traffic within your AWS network without routing through the public internet. This is essential for organizations with strict security and compliance requirements.
+AWS Console Private Access enables you to access the AWS Management Console and Signin services through VPC endpoints, keeping Console and Signin traffic within your AWS network without routing through the public internet. This is essential for organizations with strict security and compliance requirements.
 
 This power provides a complete AWS CDK TypeScript project that sets up a private access environment with:
 - VPC with public and private subnets across multiple availability zones
@@ -193,7 +193,8 @@ Once connected to the instance:
 The console access works because:
 - The instance resolves `console.aws.amazon.com` to the VPC endpoint via Route53 private hosted zone
 - The VPC endpoint routes the request to the AWS Console service
-- All traffic stays within your AWS network
+- Console and Signin traffic stays within your AWS network
+- Service-specific traffic (e.g., S3 operations through the console) may be proxied through the Console web server
 
 ## Architecture Details
 
