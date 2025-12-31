@@ -45,7 +45,13 @@ Before getting started, ensure you have:
 
 ### 1. Install the Power
 
-This power is installed directly from GitHub. Once installed in Kiro, the MCP server will automatically be available.
+This power is installed directly from the GitHub repository. Once installed in Kiro, the MCP server will automatically be available - no additional setup required.
+
+To install the power in Kiro:
+1. Open the Kiro Powers panel
+2. Click "Install from URL" 
+3. Enter: `https://github.com/sureshgururajan/aws-console-private-access-setup`
+4. The power will be installed with the MCP server automatically configured
 
 ### 2. Clone the Repository (for CDK deployment)
 
@@ -54,19 +60,8 @@ To deploy the AWS Console Private Access infrastructure, clone the repository:
 ```bash
 git clone https://github.com/sureshgururajan/aws-console-private-access-setup.git
 cd aws-console-private-access-setup
-```
-
-### 2. Install Dependencies and Build
-
-Install both the CDK project and MCP server dependencies, then build the MCP server:
-
-```bash
 npm install
-npm run install:mcp
-npm run build:mcp
 ```
-
-The build step compiles the TypeScript MCP server to JavaScript in the `mcp-server/dist/` directory.
 
 ### 3. Specify Your EC2 Keypair (Optional)
 
@@ -95,13 +90,7 @@ This creates a `cdk.out/` directory with the synthesized template.
 
 ### 5. Validate the Configuration
 
-Before deploying, validate that your configuration meets all private access requirements using the MCP validator:
-
-```bash
-npm run start:mcp
-```
-
-The MCP server will start and listen for validation requests. You can then use the `validate-cloudformation` tool to check your template.
+The MCP server is automatically available in Kiro once the power is installed. You can use the `validate-cloudformation` tool directly to check your synthesized template against all private access requirements.
 
 ## Validation
 
@@ -119,7 +108,7 @@ The included MCP server validates your CloudFormation template against these req
 
 ### Running Validation
 
-Once the MCP server is running, use the `validate-cloudformation` tool with your synthesized template:
+The MCP server runs automatically in Kiro. Use the `validate-cloudformation` tool with your synthesized template:
 
 ```bash
 # The validator will check your cdk.out/ConsolePrivateAccessStack.json template
@@ -314,8 +303,6 @@ npx cdk synth       # Emit the synthesized CloudFormation template
 npx cdk deploy      # Deploy this stack to your AWS account
 npx cdk diff        # Compare deployed stack with current state
 npx cdk destroy     # Tear down the stack
-npm run build:mcp   # Build the MCP validator server
-npm run start:mcp   # Start the MCP validator server
 ```
 
 ## Additional Resources
