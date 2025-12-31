@@ -4,6 +4,9 @@
   "type": "module",
   "description": "MCP server for validating AWS Console Private Access CloudFormation templates",
   "main": "dist/index.js",
+  "bin": {
+    "aws-console-private-access-validator": "dist/index.js"
+  },
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
@@ -22,4 +25,5 @@
     "access": "public"
   }
 }
+
 

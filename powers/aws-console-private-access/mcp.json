@@ -2,15 +2,7 @@
   "mcpServers": {
     "aws-console-private-access-validator": {
       "command": "uvx",
-      "args": ["--from", "@sureshgururajan/aws-console-private-access-validator", "aws-console-private-access-validator"]
+      "args": ["@sureshgururajan/aws-console-private-access-validator"]
     }
   }
 }
-
-
-
-
-
-
-
-
