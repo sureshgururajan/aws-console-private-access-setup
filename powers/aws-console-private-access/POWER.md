@@ -133,7 +133,7 @@ Common regions:
 - `eu-west-1` (Ireland)
 - `ap-southeast-1` (Singapore)
 
-### 3. Specify Your EC2 Keypair (Optional)
+### 3. Specify Your EC2 Keypair
 
 If you want RDP access to the Windows instance, identify an existing EC2 keypair in your AWS account:
 
