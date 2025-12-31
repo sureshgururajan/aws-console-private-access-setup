@@ -85,6 +85,36 @@ npx cdk deploy \
 * `npx cdk diff`    compare deployed stack with current state
 * `npx cdk destroy` tear down the stack
 
+## MCP Server: CloudFormation Validator
+
+This project includes an MCP (Model Context Protocol) server for validating CloudFormation templates against AWS Console Private Access requirements.
+
+### Building the MCP Server
+
+```bash
+npm run install:mcp  # Install MCP server dependencies
+npm run build:mcp    # Build the MCP server
+```
+
+### Running the MCP Server
+
+```bash
+npm run start:mcp
+```
+
+### Validating Templates
+
+The MCP server provides a `validate-cloudformation` tool that checks:
+- Required VPC endpoints (Console, Signin, SSM, EC2Messages, SSMMessages, S3)
+- Endpoint policies restricting access to specific accounts
+- Route53 private hosted zones
+- Security group configuration
+- EC2 instance setup
+- NAT Gateway configuration
+- Network routing
+
+See [mcp-server/README.md](mcp-server/README.md) for detailed documentation.
+
 ## Notes
 
 - The EC2 keypair must already exist in your AWS account

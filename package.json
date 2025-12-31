@@ -8,7 +8,10 @@
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "cdk": "cdk"
+    "cdk": "cdk",
+    "build:mcp": "npm run build --prefix mcp-server",
+    "install:mcp": "npm install --prefix mcp-server",
+    "start:mcp": "npm start --prefix mcp-server"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",
