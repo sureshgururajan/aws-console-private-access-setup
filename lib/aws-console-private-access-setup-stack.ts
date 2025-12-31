@@ -1,6 +1,7 @@
 import * as cdk from 'aws-cdk-lib';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as route53 from 'aws-cdk-lib/aws-route53';
+import { InterfaceVpcEndpointTarget } from 'aws-cdk-lib/aws-route53-targets';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import { Construct } from 'constructs';
 
@@ -119,52 +120,68 @@ export class AwsConsolePrivateAccessSetupStack extends cdk.Stack {
       zoneName: 'console.aws.amazon.com',
     });
 
-    // Console records
+    // Console records - use alias records to VPC endpoint
     new route53.ARecord(this, 'ConsoleRecordGlobal', {
       zone: consoleHostedZone,
-      target: route53.RecordTarget.fromIpAddresses(...consoleEndpoint.vpcEndpointDnsEntries),
+      target: route53.RecordTarget.fromAlias(
+        new InterfaceVpcEndpointTarget(consoleEndpoint)
+      ),
       recordName: 'console.aws.amazon.com',
     });
 
     new route53.ARecord(this, 'GlobalConsoleRecord', {
       zone: consoleHostedZone,
-      target: route53.RecordTarget.fromIpAddresses(...consoleEndpoint.vpcEndpointDnsEntries),
+      target: route53.RecordTarget.fromAlias(
+        new InterfaceVpcEndpointTarget(consoleEndpoint)
+      ),
       recordName: 'global.console.aws.amazon.com',
     });
 
     new route53.ARecord(this, 'ConsoleS3ProxyRecord', {
       zone: consoleHostedZone,
-      target: route53.RecordTarget.fromIpAddresses(...consoleEndpoint.vpcEndpointDnsEntries),
+      target: route53.RecordTarget.fromAlias(
+        new InterfaceVpcEndpointTarget(consoleEndpoint)
+      ),
       recordName: 's3.console.aws.amazon.com',
     });
 
     new route53.ARecord(this, 'ConsoleSupportProxyRecord', {
       zone: consoleHostedZone,
-      target: route53.RecordTarget.fromIpAddresses(...consoleEndpoint.vpcEndpointDnsEntries),
+      target: route53.RecordTarget.fromAlias(
+        new InterfaceVpcEndpointTarget(consoleEndpoint)
+      ),
       recordName: 'support.console.aws.amazon.com',
     });
 
     new route53.ARecord(this, 'ExplorerProxyRecord', {
       zone: consoleHostedZone,
-      target: route53.RecordTarget.fromIpAddresses(...consoleEndpoint.vpcEndpointDnsEntries),
+      target: route53.RecordTarget.fromAlias(
+        new InterfaceVpcEndpointTarget(consoleEndpoint)
+      ),
       recordName: 'resource-explorer.console.aws.amazon.com',
     });
 
     new route53.ARecord(this, 'WidgetProxyRecord', {
       zone: consoleHostedZone,
-      target: route53.RecordTarget.fromIpAddresses(...consoleEndpoint.vpcEndpointDnsEntries),
+      target: route53.RecordTarget.fromAlias(
+        new InterfaceVpcEndpointTarget(consoleEndpoint)
+      ),
       recordName: '*.widget.console.aws.amazon.com',
     });
 
     new route53.ARecord(this, 'ConsoleRecordRegional', {
       zone: consoleHostedZone,
-      target: route53.RecordTarget.fromIpAddresses(...consoleEndpoint.vpcEndpointDnsEntries),
+      target: route53.RecordTarget.fromAlias(
+        new InterfaceVpcEndpointTarget(consoleEndpoint)
+      ),
       recordName: `${this.region}.console.aws.amazon.com`,
     });
 
     new route53.ARecord(this, 'ConsoleRecordRegionalMultiSession', {
       zone: consoleHostedZone,
-      target: route53.RecordTarget.fromIpAddresses(...consoleEndpoint.vpcEndpointDnsEntries),
+      target: route53.RecordTarget.fromAlias(
+        new InterfaceVpcEndpointTarget(consoleEndpoint)
+      ),
       recordName: `*.${this.region}.console.aws.amazon.com`,
     });
 
@@ -176,13 +193,17 @@ export class AwsConsolePrivateAccessSetupStack extends cdk.Stack {
 
     new route53.ARecord(this, 'SigninRecordGlobal', {
       zone: signinHostedZone,
-      target: route53.RecordTarget.fromIpAddresses(...signinEndpoint.vpcEndpointDnsEntries),
+      target: route53.RecordTarget.fromAlias(
+        new InterfaceVpcEndpointTarget(signinEndpoint)
+      ),
       recordName: 'signin.aws.amazon.com',
     });
 
     new route53.ARecord(this, 'SigninRecordRegional', {
       zone: signinHostedZone,
-      target: route53.RecordTarget.fromIpAddresses(...signinEndpoint.vpcEndpointDnsEntries),
+      target: route53.RecordTarget.fromAlias(
+        new InterfaceVpcEndpointTarget(signinEndpoint)
+      ),
       recordName: `${this.region}.signin.aws.amazon.com`,
     });
 
