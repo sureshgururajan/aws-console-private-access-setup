@@ -2,6 +2,8 @@
 name: aws-console-private-access
 displayName: AWS Console Private Access
 description: Set up secure AWS Management Console access through VPC endpoints without routing through the public internet. Includes CloudFormation validation to ensure your configuration meets private access requirements.
+version: 1.0.0
+author: Suresh Gururajan
 keywords:
   - aws
   - console
@@ -10,7 +12,6 @@ keywords:
   - cloudformation
   - validation
   - cdk
-author: Suresh Gururajan
 ---
 
 # AWS Console Private Access
