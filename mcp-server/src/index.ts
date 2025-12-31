@@ -8,6 +8,8 @@ import {
 } from '@modelcontextprotocol/sdk/types.js';
 import { ConsolePrivateAccessValidator } from './validator.js';
 import { CloudFormationTemplate } from './types.js';
+import { readFileSync } from 'fs';
+import { resolve } from 'path';
 
 const server = new Server(
   {
@@ -33,13 +35,17 @@ const tools: Tool[] = [
           type: 'string',
           description: 'CloudFormation template as JSON string',
         },
+        templateFile: {
+          type: 'string',
+          description: 'Path to CloudFormation template file (alternative to template parameter)',
+        },
         region: {
           type: 'string',
           description: 'AWS region (default: us-east-1)',
           default: 'us-east-1',
         },
       },
-      required: ['template'],
+      required: [],
     },
   },
 ];
@@ -50,13 +56,27 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
 
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   if (request.params.name === 'validate-cloudformation') {
-    const { template, region = 'us-east-1' } = request.params.arguments as {
-      template: string;
+    const { template, templateFile, region = 'us-east-1' } = request.params.arguments as {
+      template?: string;
+      templateFile?: string;
       region?: string;
     };
 
     try {
-      const parsedTemplate: CloudFormationTemplate = JSON.parse(template);
+      let parsedTemplate: CloudFormationTemplate;
+
+      if (templateFile) {
+        // Read template from file
+        const filePath = resolve(templateFile);
+        const fileContent = readFileSync(filePath, 'utf-8');
+        parsedTemplate = JSON.parse(fileContent);
+      } else if (template) {
+        // Parse template from string
+        parsedTemplate = JSON.parse(template);
+      } else {
+        throw new Error('Either template or templateFile parameter must be provided');
+      }
+
       const validator = new ConsolePrivateAccessValidator(parsedTemplate, region);
       const result = validator.validate();
 
@@ -78,7 +98,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
               {
                 valid: false,
                 checks: [],
-                summary: `Error parsing template: ${errorMessage}`,
+                summary: `Error processing template: ${errorMessage}`,
               },
               null,
               2

@@ -3,8 +3,8 @@
     "aws-console-private-access-validator": {
       "command": "npx",
       "args": [
-        "-y", 
-        "@sureshgururajan/aws-console-private-access-validator"
+        "--yes",
+        "@sureshgururajan/aws-console-private-access-validator@latest"
       ]
     }
   }
