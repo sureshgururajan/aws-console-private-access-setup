@@ -25,13 +25,21 @@ npm install
 npm run build
 ```
 
-## Running
+## Running the MCP Server
 
 ```bash
 npm start
 ```
 
 The server will listen on stdin/stdout for MCP protocol messages.
+
+## Testing
+
+Test the validator against a CloudFormation template:
+
+```bash
+npm test -- /path/to/template.json
+```
 
 ## Usage
 
