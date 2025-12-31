@@ -33,13 +33,64 @@ The power also includes an MCP (Model Context Protocol) server that validates yo
 
 ## Prerequisites
 
-Before getting started, ensure you have:
+Before getting started, verify you have the required tools installed:
 
-- **AWS CDK CLI** installed (`npm install -g aws-cdk`)
-- **Node.js 18+** and npm
-- **AWS credentials** configured with appropriate permissions to create VPCs, EC2 instances, and VPC endpoints
-- **An existing EC2 keypair** in your AWS account (optional, for RDP access to the Windows instance)
-- **AWS account** with sufficient service limits for VPC resources
+### Check Prerequisites
+
+```bash
+# Check Node.js version (need 18+)
+node --version
+
+# Check npm version
+npm --version
+
+# Check TypeScript version
+npx tsc --version
+
+# Check AWS CDK version
+cdk --version
+
+# Check AWS CLI is configured
+aws sts get-caller-identity
+```
+
+### Install Missing Prerequisites
+
+If any of the above commands fail, install the missing tools:
+
+```bash
+# Install Node.js 18+ (if needed)
+# On macOS with Homebrew:
+brew install node
+
+# Install TypeScript globally (if needed)
+npm install -g typescript
+
+# Install AWS CDK CLI globally (if needed)
+npm install -g aws-cdk
+
+# Configure AWS credentials (if needed)
+aws configure
+```
+
+When running `aws configure`, you'll be prompted for:
+- AWS Access Key ID
+- AWS Secret Access Key
+- Default region (e.g., us-east-1)
+- Default output format (json is recommended)
+
+### Optional: EC2 Keypair
+
+If you want RDP access to the Windows instance, you'll need an existing EC2 keypair in your AWS account. You can create one if needed:
+
+```bash
+# List existing keypairs in your region
+aws ec2 describe-key-pairs --region $AWS_REGION --query 'KeyPairs[].KeyName' --output text
+
+# Create a new keypair if needed
+aws ec2 create-key-pair --region $AWS_REGION --key-name my-keypair --query 'KeyMaterial' --output text > my-keypair.pem
+chmod 400 my-keypair.pem
+```
 
 ## Quick Start
 
@@ -82,9 +133,33 @@ aws ec2 describe-key-pairs --region $AWS_REGION --query 'KeyPairs[].KeyName' --o
 
 Note the keypair name - you'll use it in the next steps.
 
-### 4. Deploy the Infrastructure
+### 4. Synthesize the CloudFormation Template
 
-Deploy the stack to your AWS account:
+Generate the CloudFormation template from the CDK code:
+
+```bash
+# Without keypair (instance only accessible via Systems Manager)
+npx cdk synth --region $AWS_REGION
+
+# With keypair (for RDP access)
+npx cdk synth --region $AWS_REGION -c ec2KeyPair=your-keypair-name
+```
+
+This creates a `cdk.out/` directory with the synthesized template.
+
+### 5. Validate Your Configuration
+
+Before deploying, validate that your configuration meets all private access requirements. Ask me to validate your synthesized template:
+
+```
+Validate my CloudFormation template at cdk.out/ConsolePrivateAccessStack.json
+```
+
+The validator will check that all VPC endpoints, security groups, Route53 zones, and network routing are properly configured.
+
+### 6. Deploy the Infrastructure
+
+Once validation passes, deploy the stack to your AWS account:
 
 ```bash
 # Without keypair (instance only accessible via Systems Manager)
