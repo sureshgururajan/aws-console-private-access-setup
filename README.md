@@ -2,6 +2,8 @@
 
 This CDK TypeScript project creates an AWS Management Console Private Access setup with VPC endpoints, Route53 hosted zones, and a Windows EC2 instance for testing.
 
+For more information about AWS Console Private Access, see the [official AWS documentation](https://docs.aws.amazon.com/awsconsolehelpdocs/latest/gsg/console-private-access.html).
+
 ## Architecture
 
 The stack creates:
