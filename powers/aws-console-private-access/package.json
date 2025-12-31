@@ -1,8 +1,0 @@
-{
-  "name": "power-aws-console-private-access",
-  "version": "1.0.0",
-  "description": "AWS Console Private Access setup power",
-  "scripts": {
-    "setup": "npm install && npm run install:mcp && npm run build:mcp"
-  }
-}

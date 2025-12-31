@@ -16,6 +16,18 @@ keywords:
 
 # AWS Console Private Access
 
+## ⚠️ Important: Setup Required
+
+After installing this power, you **must** run these commands in the power's directory to build the MCP server:
+
+```bash
+npm install
+npm run install:mcp
+npm run build:mcp
+```
+
+Without running these commands, the MCP server will not start and you'll see connection errors.
+
 ## Setup Instructions
 
 After installing this power, run the following commands to complete setup:
