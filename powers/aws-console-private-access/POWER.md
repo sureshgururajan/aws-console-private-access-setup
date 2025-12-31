@@ -42,6 +42,24 @@ Before getting started, you must have the following tools installed and configur
 - **AWS CDK CLI** - Infrastructure as code tool
 - **AWS CLI** - Command-line interface for AWS
 - **AWS Account** - With appropriate permissions to create VPC endpoints and EC2 instances
+- **EC2 Keypair** - For accessing the Windows instance (see below)
+
+### EC2 Keypair Setup
+
+The deployment creates a Windows EC2 instance in a private subnet. You must have an EC2 keypair to access it via RDP.
+
+**Create or identify an EC2 keypair:**
+
+```bash
+# List existing keypairs in your region
+aws ec2 describe-key-pairs --region $AWS_REGION --query 'KeyPairs[].KeyName' --output text
+
+# Create a new keypair if needed
+aws ec2 create-key-pair --region $AWS_REGION --key-name my-keypair --query 'KeyMaterial' --output text > my-keypair.pem
+chmod 400 my-keypair.pem
+```
+
+Save the keypair name - you'll need to provide it during deployment. You'll use this keypair to connect to the Windows instance via RDP.
 
 ### Verify Prerequisites
 
@@ -84,19 +102,6 @@ When running `aws configure`, you'll be prompted for:
 - AWS Secret Access Key
 - Default region (e.g., us-east-1)
 - Default output format (json is recommended)
-
-### Optional: EC2 Keypair
-
-If you want RDP access to the Windows instance, you'll need an existing EC2 keypair in your AWS account. You can create one if needed:
-
-```bash
-# List existing keypairs in your region
-aws ec2 describe-key-pairs --region $AWS_REGION --query 'KeyPairs[].KeyName' --output text
-
-# Create a new keypair if needed
-aws ec2 create-key-pair --region $AWS_REGION --key-name my-keypair --query 'KeyMaterial' --output text > my-keypair.pem
-chmod 400 my-keypair.pem
-```
 
 ## Quick Start
 
