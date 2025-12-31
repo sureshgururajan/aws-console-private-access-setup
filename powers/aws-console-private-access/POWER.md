@@ -33,9 +33,19 @@ The power also includes an MCP (Model Context Protocol) server that validates yo
 
 ## Prerequisites
 
-Before getting started, verify you have the required tools installed:
+Before getting started, you must have the following tools installed and configured:
 
-### Check Prerequisites
+### Required Tools
+
+- **Node.js 18+** - JavaScript runtime
+- **npm** - Node package manager (comes with Node.js)
+- **AWS CDK CLI** - Infrastructure as code tool
+- **AWS CLI** - Command-line interface for AWS
+- **AWS Account** - With appropriate permissions to create VPC endpoints and EC2 instances
+
+### Verify Prerequisites
+
+Run these commands to verify everything is installed:
 
 ```bash
 # Check Node.js version (need 18+)
@@ -50,6 +60,8 @@ cdk --version
 # Check AWS CLI is configured
 aws sts get-caller-identity
 ```
+
+If any command fails, follow the installation steps below.
 
 ### Install Missing Prerequisites
 
