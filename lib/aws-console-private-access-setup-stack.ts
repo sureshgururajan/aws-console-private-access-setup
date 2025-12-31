@@ -93,7 +93,7 @@ export class AwsConsolePrivateAccessSetupStack extends cdk.Stack {
       securityGroups: [vpcEndpointSG],
     });
 
-    // Signin Interface Endpoint
+    // Signin Interface Endpoint with policy restricting to owning account
     const signinEndpoint = vpc.addInterfaceEndpoint('SigninEndpoint', {
       service: new ec2.InterfaceVpcEndpointService('com.amazonaws.' + this.region + '.signin'),
       privateDnsEnabled: false,
@@ -103,7 +103,21 @@ export class AwsConsolePrivateAccessSetupStack extends cdk.Stack {
       securityGroups: [vpcEndpointSG],
     });
 
-    // Console Interface Endpoint
+    signinEndpoint.addToPolicy(
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        principals: [new iam.AnyPrincipal()],
+        actions: ['*'],
+        resources: ['*'],
+        conditions: {
+          StringEquals: {
+            'aws:PrincipalAccount': this.account,
+          },
+        },
+      })
+    );
+
+    // Console Interface Endpoint with policy restricting to owning account
     const consoleEndpoint = vpc.addInterfaceEndpoint('ConsoleEndpoint', {
       service: new ec2.InterfaceVpcEndpointService('com.amazonaws.' + this.region + '.console'),
       privateDnsEnabled: false,
@@ -112,6 +126,20 @@ export class AwsConsolePrivateAccessSetupStack extends cdk.Stack {
       },
       securityGroups: [vpcEndpointSG],
     });
+
+    consoleEndpoint.addToPolicy(
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        principals: [new iam.AnyPrincipal()],
+        actions: ['*'],
+        resources: ['*'],
+        conditions: {
+          StringEquals: {
+            'aws:PrincipalAccount': this.account,
+          },
+        },
+      })
+    );
 
     // ======================== ROUTE53 HOSTED ZONES ========================
     // Console Hosted Zone
