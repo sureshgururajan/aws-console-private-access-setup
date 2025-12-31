@@ -63,32 +63,50 @@ cd aws-console-private-access-setup
 npm install
 ```
 
-### 3. Specify Your EC2 Keypair (Optional)
+### 3. Choose Your AWS Region
+
+Decide which AWS region you want to deploy to. This will be used for all AWS CLI commands and CDK deployment:
+
+```bash
+# Set your preferred region (replace with your choice)
+export AWS_REGION=us-east-1
+
+# Verify the region is set
+echo "Using AWS region: $AWS_REGION"
+```
+
+Common regions:
+- `us-east-1` (N. Virginia)
+- `us-west-2` (Oregon) 
+- `eu-west-1` (Ireland)
+- `ap-southeast-1` (Singapore)
+
+### 4. Specify Your EC2 Keypair (Optional)
 
 If you want RDP access to the Windows instance, identify an existing EC2 keypair in your AWS account:
 
 ```bash
-# List available keypairs in your account
-aws ec2 describe-key-pairs --query 'KeyPairs[].KeyName' --output text
+# List available keypairs in your chosen region
+aws ec2 describe-key-pairs --region $AWS_REGION --query 'KeyPairs[].KeyName' --output text
 ```
 
 Note the keypair name - you'll use it in the next steps.
 
-### 4. Synthesize the CloudFormation Template
+### 5. Synthesize the CloudFormation Template
 
 Generate the CloudFormation template from the CDK code:
 
 ```bash
 # Without keypair (instance only accessible via Systems Manager)
-npx cdk synth
+npx cdk synth --region $AWS_REGION
 
 # With keypair (for RDP access)
-npx cdk synth -c ec2KeyPair=your-keypair-name
+npx cdk synth --region $AWS_REGION -c ec2KeyPair=your-keypair-name
 ```
 
 This creates a `cdk.out/` directory with the synthesized template.
 
-### 5. Validate the Configuration
+### 6. Validate the Configuration
 
 The MCP server is automatically available in Kiro once the power is installed. You can use the `validate-cloudformation` tool directly to check your synthesized template against all private access requirements.
 
@@ -123,7 +141,7 @@ The validator returns a detailed report of all checks with pass/fail/warning sta
 Deploy the stack without an EC2 keypair. The instance will only be accessible via AWS Systems Manager Session Manager:
 
 ```bash
-npx cdk deploy
+npx cdk deploy --region $AWS_REGION
 ```
 
 ### Deployment with EC2 Keypair
@@ -131,7 +149,7 @@ npx cdk deploy
 If you want RDP access to the Windows instance, deploy with your keypair name:
 
 ```bash
-npx cdk deploy -c ec2KeyPair=your-keypair-name
+npx cdk deploy --region $AWS_REGION -c ec2KeyPair=your-keypair-name
 ```
 
 Replace `your-keypair-name` with the actual keypair name from your AWS account.
@@ -141,7 +159,7 @@ Replace `your-keypair-name` with the actual keypair name from your AWS account.
 Customize the deployment with additional context values:
 
 ```bash
-npx cdk deploy \
+npx cdk deploy --region $AWS_REGION \
   -c ec2KeyPair=your-keypair-name \
   -c vpcCidr=10.0.0.0/16 \
   -c instanceType=t3.large
@@ -252,9 +270,9 @@ Security groups are configured to:
 - Keypair is in a different region
 
 **Solutions:**
-1. Verify the keypair exists: `aws ec2 describe-key-pairs --key-names my-keypair`
+1. Verify the keypair exists: `aws ec2 describe-key-pairs --region $AWS_REGION --key-names my-keypair`
 2. Ensure you're deploying to the same region where the keypair exists
-3. Create a new keypair if needed: `aws ec2 create-key-pair --key-name my-keypair`
+3. Create a new keypair if needed: `aws ec2 create-key-pair --region $AWS_REGION --key-name my-keypair`
 
 ### CloudFormation Validation Fails
 
@@ -288,7 +306,7 @@ Security groups are configured to:
 When you're done testing, destroy the stack to avoid ongoing charges:
 
 ```bash
-npx cdk destroy
+npx cdk destroy --region $AWS_REGION
 ```
 
 This removes all resources created by the stack, including the VPC, VPC endpoints, Route53 zones, and EC2 instance.
@@ -299,10 +317,10 @@ This removes all resources created by the stack, including the VPC, VPC endpoint
 npm run build       # Compile TypeScript to JavaScript
 npm run watch       # Watch for changes and compile
 npm run test        # Run unit tests
-npx cdk synth       # Emit the synthesized CloudFormation template
-npx cdk deploy      # Deploy this stack to your AWS account
-npx cdk diff        # Compare deployed stack with current state
-npx cdk destroy     # Tear down the stack
+npx cdk synth --region $AWS_REGION       # Emit the synthesized CloudFormation template
+npx cdk deploy --region $AWS_REGION      # Deploy this stack to your AWS account
+npx cdk diff --region $AWS_REGION        # Compare deployed stack with current state
+npx cdk destroy --region $AWS_REGION     # Tear down the stack
 ```
 
 ## Additional Resources
