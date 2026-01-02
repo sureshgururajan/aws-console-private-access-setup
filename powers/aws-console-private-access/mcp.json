@@ -15,15 +15,6 @@
       "env": {
         "FASTMCP_LOG_LEVEL": "ERROR"
       }
-    },
-    "aws-cli": {
-      "command": "uvx",
-      "args": [
-        "awslabs.aws-cli-mcp-server@latest"
-      ],
-      "env": {
-        "FASTMCP_LOG_LEVEL": "ERROR"
-      }
     }
   }
 }
