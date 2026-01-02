@@ -106,46 +106,34 @@ export class ConsolePrivateAccessValidator {
 
   private checkEndpointPolicies(): void {
     const resources = this.template.Resources || {};
-    const consoleEndpoint = Object.entries(resources).find(
-      ([_, r]: [string, any]) => {
-        const serviceName = this.getServiceName(r.Properties?.ServiceName);
-        return (
-          r.Type === 'AWS::EC2::VPCEndpoint' &&
-          serviceName &&
-          serviceName.includes('console')
-        );
-      }
+    const interfaceEndpoints = Object.entries(resources).filter(
+      ([_, r]: [string, any]) => r.Type === 'AWS::EC2::VPCEndpoint' && r.Properties?.VpcEndpointType === 'Interface'
     );
 
-    const signinEndpoint = Object.entries(resources).find(
-      ([_, r]: [string, any]) => {
-        const serviceName = this.getServiceName(r.Properties?.ServiceName);
-        return (
-          r.Type === 'AWS::EC2::VPCEndpoint' &&
-          serviceName &&
-          serviceName.includes('signin')
-        );
-      }
-    );
+    for (const [name, resource] of interfaceEndpoints) {
+      const serviceName = this.getServiceName((resource as any).Properties?.ServiceName);
+      const hasPolicy = (resource as any).Properties?.PolicyDocument;
+      const privateDnsEnabled = (resource as any).Properties?.PrivateDnsEnabled;
 
-    for (const [name, endpoint] of [
-      ['Console', consoleEndpoint],
-      ['Signin', signinEndpoint],
-    ]) {
-      if (!endpoint) continue;
-
-      const [_, resource] = endpoint as [string, any];
-      const hasPolicy = resource.Properties?.PolicyDocument;
-
+      // Check for policy
       this.checks.push({
-        name: `Endpoint Policy: ${name}`,
+        name: `Endpoint Policy: ${serviceName || name}`,
         status: hasPolicy ? 'pass' : 'fail',
         message: hasPolicy
-          ? `${name} endpoint has a policy attached`
-          : `${name} endpoint is missing a policy`,
+          ? `${serviceName || name} endpoint has a policy attached`
+          : `${serviceName || name} endpoint is missing a policy`,
         details: hasPolicy
-          ? this.validatePolicyContent(resource.Properties.PolicyDocument)
+          ? this.validatePolicyContent((resource as any).Properties.PolicyDocument)
           : undefined,
+      });
+
+      // Check for private DNS enabled
+      this.checks.push({
+        name: `Private DNS: ${serviceName || name}`,
+        status: privateDnsEnabled ? 'pass' : 'fail',
+        message: privateDnsEnabled
+          ? `${serviceName || name} endpoint has private DNS enabled`
+          : `${serviceName || name} endpoint does not have private DNS enabled`,
       });
     }
   }

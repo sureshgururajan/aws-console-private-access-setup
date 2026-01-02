@@ -6,6 +6,24 @@
         "-y", 
         "@sureshgururajan/aws-console-private-access-validator"
       ]
+    },
+    "aws-documentation": {
+      "command": "uvx",
+      "args": [
+        "awslabs.aws-documentation-mcp-server@latest"
+      ],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      }
+    },
+    "aws-cli": {
+      "command": "uvx",
+      "args": [
+        "awslabs.aws-cli-mcp-server@latest"
+      ],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      }
     }
   }
 }

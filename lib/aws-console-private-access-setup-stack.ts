@@ -64,39 +64,81 @@ export class AwsConsolePrivateAccessSetupStack extends cdk.Stack {
     });
 
     // SSM Interface Endpoint
-    vpc.addInterfaceEndpoint('SSMEndpoint', {
+    const ssmEndpoint = vpc.addInterfaceEndpoint('SSMEndpoint', {
       service: ec2.InterfaceVpcEndpointAwsService.SSM,
-      privateDnsEnabled: false,
+      privateDnsEnabled: true,
       subnets: {
         subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
       },
       securityGroups: [vpcEndpointSG],
     });
+
+    ssmEndpoint.addToPolicy(
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        principals: [new iam.AnyPrincipal()],
+        actions: ['*'],
+        resources: ['*'],
+        conditions: {
+          StringEquals: {
+            'aws:PrincipalAccount': this.account,
+          },
+        },
+      })
+    );
 
     // EC2Messages Interface Endpoint
-    vpc.addInterfaceEndpoint('EC2MessagesEndpoint', {
+    const ec2MessagesEndpoint = vpc.addInterfaceEndpoint('EC2MessagesEndpoint', {
       service: ec2.InterfaceVpcEndpointAwsService.EC2_MESSAGES,
-      privateDnsEnabled: false,
+      privateDnsEnabled: true,
       subnets: {
         subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
       },
       securityGroups: [vpcEndpointSG],
     });
 
+    ec2MessagesEndpoint.addToPolicy(
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        principals: [new iam.AnyPrincipal()],
+        actions: ['*'],
+        resources: ['*'],
+        conditions: {
+          StringEquals: {
+            'aws:PrincipalAccount': this.account,
+          },
+        },
+      })
+    );
+
     // SSM Messages Interface Endpoint
-    vpc.addInterfaceEndpoint('SSMMessagesEndpoint', {
+    const ssmMessagesEndpoint = vpc.addInterfaceEndpoint('SSMMessagesEndpoint', {
       service: ec2.InterfaceVpcEndpointAwsService.SSM_MESSAGES,
-      privateDnsEnabled: false,
+      privateDnsEnabled: true,
       subnets: {
         subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
       },
       securityGroups: [vpcEndpointSG],
     });
+
+    ssmMessagesEndpoint.addToPolicy(
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        principals: [new iam.AnyPrincipal()],
+        actions: ['*'],
+        resources: ['*'],
+        conditions: {
+          StringEquals: {
+            'aws:PrincipalAccount': this.account,
+          },
+        },
+      })
+    );
 
     // Signin Interface Endpoint with policy restricting to owning account
     const signinEndpoint = vpc.addInterfaceEndpoint('SigninEndpoint', {
       service: new ec2.InterfaceVpcEndpointService('com.amazonaws.' + this.region + '.signin'),
-      privateDnsEnabled: false,
+      privateDnsEnabled: true,
       subnets: {
         subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
       },
@@ -120,7 +162,7 @@ export class AwsConsolePrivateAccessSetupStack extends cdk.Stack {
     // Console Interface Endpoint with policy restricting to owning account
     const consoleEndpoint = vpc.addInterfaceEndpoint('ConsoleEndpoint', {
       service: new ec2.InterfaceVpcEndpointService('com.amazonaws.' + this.region + '.console'),
-      privateDnsEnabled: false,
+      privateDnsEnabled: true,
       subnets: {
         subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
       },

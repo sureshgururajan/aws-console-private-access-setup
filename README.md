@@ -107,6 +107,7 @@ npm run start:mcp
 The MCP server provides a `validate-cloudformation` tool that checks:
 - Required VPC endpoints (Console, Signin, SSM, EC2Messages, SSMMessages, S3)
 - Endpoint policies restricting access to specific accounts
+- Private DNS enabled on all interface endpoints
 - Route53 private hosted zones
 - Security group configuration
 - EC2 instance setup

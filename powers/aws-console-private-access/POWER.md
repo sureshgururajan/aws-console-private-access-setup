@@ -189,7 +189,8 @@ If you want to validate your CloudFormation template before or after deployment,
 ### What the Validator Checks
 
 - **VPC Endpoints** - Verifies all required endpoints exist (Console, Signin, SSM, EC2Messages, SSMMessages, S3)
-- **Endpoint Policies** - Ensures policies allow access to AWS Console APIs
+- **Endpoint Policies** - Ensures all interface endpoints have policies restricting access to your AWS account
+- **Private DNS** - Confirms all interface endpoints have private DNS enabled
 - **Route53 Private Hosted Zones** - Checks for DNS zones for console.aws.amazon.com and signin.aws.amazon.com
 - **Security Groups** - Validates HTTPS (port 443) access to VPC endpoints
 - **EC2 Instance** - Confirms instance is in a private subnet with SSM IAM role
@@ -381,6 +382,36 @@ npx cdk destroy --region $AWS_REGION
 ```
 
 This removes all resources created by the stack, including the VPC, VPC endpoints, Route53 zones, and EC2 instance.
+
+## Adding VPC Endpoints for Additional Services
+
+The base configuration includes endpoints for Console, Signin, and Systems Manager. You can easily add endpoints for other AWS services like Lambda, API Gateway, DynamoDB, and more.
+
+### How to Add Endpoints
+
+Simply ask me to add endpoints for the services you need:
+
+```
+Add VPC endpoints for Lambda and API Gateway
+```
+
+I will:
+1. Look up the exact VPC endpoint service names via AWS documentation
+2. Generate endpoint code following the same pattern as existing endpoints
+3. Enable private DNS for automatic DNS resolution
+4. Apply restrictive endpoint policies (limited to your AWS account)
+5. Update your CDK stack and validate the configuration
+
+### Supported Services
+
+Many AWS services support VPC endpoints, including:
+- Lambda, API Gateway, DynamoDB, SQS, SNS
+- Secrets Manager, Parameter Store, CloudWatch Logs
+- ECR, CloudFormation, and many more
+
+See the [Add VPC Endpoints Guide](steering/add-vpc-endpoints.md) for more details and examples.
+
+## Cleanup
 
 ## Useful Commands
 
