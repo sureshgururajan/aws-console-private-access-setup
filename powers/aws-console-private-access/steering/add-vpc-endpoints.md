@@ -1,7 +1,3 @@
----
-inclusion: manual
----
-
 # Adding VPC Endpoints for Additional AWS Services
 
 This guide explains how to add VPC endpoints for additional AWS services to your Console Private Access setup.
@@ -32,30 +28,70 @@ Or:
 I need to add endpoints for DynamoDB, SQS, and SNS
 ```
 
-## What Happens When You Request New Endpoints
+## Workflow: Adding New Endpoints
 
-When you request new endpoints, I will:
+When you request new endpoints, I will follow this workflow:
 
-1. **Look up service details** via AWS documentation to find:
-   - The exact VPC endpoint service name for each service
-   - Whether the service uses Interface or Gateway endpoints
-   - Any service-specific configuration requirements
+### Step 1: Look Up Service Details Using AWS Documentation MCP
 
-2. **Generate endpoint code** that:
-   - Follows the same pattern as existing endpoints
-   - Enables private DNS for automatic DNS resolution
-   - Applies restrictive endpoint policies (limited to your AWS account)
-   - Uses the same security group configuration
+**IMPORTANT:** I must use the aws-documentation MCP tool to look up each service. For each service requested:
 
-3. **Update your CDK stack** by:
-   - Adding new endpoint definitions to `lib/aws-console-private-access-setup-stack.ts`
-   - Preserving all existing endpoints and configurations
-   - Maintaining code consistency and formatting
+1. Search AWS documentation for "VPC endpoint service name [SERVICE_NAME]"
+   - Example: "VPC endpoint service name Lambda"
+   - Example: "VPC endpoint service name DynamoDB"
 
-4. **Validate the configuration** to ensure:
-   - All endpoints have policies configured
-   - All endpoints have private DNS enabled
-   - No conflicts with existing endpoints
+2. Extract from the documentation:
+   - The exact service name format (e.g., `com.amazonaws.{region}.lambda`)
+   - Whether it's an Interface or Gateway endpoint
+   - Any service-specific requirements
+
+3. Document the findings before proceeding to code generation
+
+### Step 2: Generate Endpoint Code
+
+Once I have the service names from AWS documentation, I will generate endpoint code following the established pattern:
+
+```typescript
+const serviceEndpoint = vpc.addInterfaceEndpoint('ServiceEndpoint', {
+  service: ec2.InterfaceVpcEndpointAwsService.SERVICE_NAME,
+  privateDnsEnabled: true,  // Always enabled
+  subnets: {
+    subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
+  },
+  securityGroups: [vpcEndpointSG],
+});
+
+serviceEndpoint.addToPolicy(
+  new iam.PolicyStatement({
+    effect: iam.Effect.ALLOW,
+    principals: [new iam.AnyPrincipal()],
+    actions: ['*'],
+    resources: ['*'],
+    conditions: {
+      StringEquals: {
+        'aws:PrincipalAccount': this.account,
+      },
+    },
+  })
+);
+```
+
+### Step 3: Insert Code into CDK Stack
+
+- Find the `// ======================== VPC ENDPOINTS ========================` section
+- Insert new endpoints before the `// ======================== ROUTE53 HOSTED ZONES ========================` section
+- Preserve all existing endpoints
+
+### Step 4: Validate Configuration
+
+- Synthesize the template: `npx cdk synth`
+- Run the validator to ensure all endpoints have policies and private DNS enabled
+- Confirm validation passed
+
+### Step 5: Summary
+
+- Show what was added
+- Display validation results
 
 ## Common Services with VPC Endpoints
 
@@ -100,66 +136,25 @@ This ensures:
 
 Some AWS services don't have VPC endpoints available. If you request an endpoint for a service that doesn't support it, I'll let you know and suggest alternatives.
 
-## Example: Adding Lambda and API Gateway
+## Example: Adding Lambda and DynamoDB
 
-When you ask to add Lambda and API Gateway endpoints:
+When you ask to add Lambda and DynamoDB endpoints:
 
-1. I'll search AWS documentation for the exact service names
-2. I'll generate code like:
+1. **I search AWS documentation for each service:**
+   - Search: "VPC endpoint service name Lambda"
+   - Result: `com.amazonaws.{region}.lambda` (Interface endpoint)
+   - Search: "VPC endpoint service name DynamoDB"
+   - Result: `com.amazonaws.{region}.dynamodb` (Gateway endpoint)
 
-```typescript
-// Lambda Interface Endpoint
-const lambdaEndpoint = vpc.addInterfaceEndpoint('LambdaEndpoint', {
-  service: ec2.InterfaceVpcEndpointAwsService.LAMBDA,
-  privateDnsEnabled: true,
-  subnets: {
-    subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
-  },
-  securityGroups: [vpcEndpointSG],
-});
+2. **I generate the appropriate code:**
+   - Lambda uses InterfaceVpcEndpoint with policy and private DNS
+   - DynamoDB uses GatewayVpcEndpoint (no policy needed)
 
-lambdaEndpoint.addToPolicy(
-  new iam.PolicyStatement({
-    effect: iam.Effect.ALLOW,
-    principals: [new iam.AnyPrincipal()],
-    actions: ['*'],
-    resources: ['*'],
-    conditions: {
-      StringEquals: {
-        'aws:PrincipalAccount': this.account,
-      },
-    },
-  })
-);
+3. **I add the code to your CDK stack**
 
-// API Gateway Interface Endpoint
-const apigatewayEndpoint = vpc.addInterfaceEndpoint('APIGatewayEndpoint', {
-  service: ec2.InterfaceVpcEndpointAwsService.APIGATEWAY,
-  privateDnsEnabled: true,
-  subnets: {
-    subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
-  },
-  securityGroups: [vpcEndpointSG],
-});
+4. **I validate the configuration**
 
-apigatewayEndpoint.addToPolicy(
-  new iam.PolicyStatement({
-    effect: iam.Effect.ALLOW,
-    principals: [new iam.AnyPrincipal()],
-    actions: ['*'],
-    resources: ['*'],
-    conditions: {
-      StringEquals: {
-        'aws:PrincipalAccount': this.account,
-      },
-    },
-  })
-);
-```
-
-3. I'll add this code to your CDK stack
-4. I'll validate that everything is configured correctly
-5. I'll show you the changes and confirm validation passed
+5. **I show you the results**
 
 ## Next Steps
 
