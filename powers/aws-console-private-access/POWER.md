@@ -373,16 +373,6 @@ Security groups are configured to:
 
 - **IAM Roles** - The EC2 instance uses an IAM role for SSM access. Ensure the role has only necessary permissions.
 
-## Cleanup
-
-When you're done testing, destroy the stack to avoid ongoing charges:
-
-```bash
-npx cdk destroy --region $AWS_REGION
-```
-
-This removes all resources created by the stack, including the VPC, VPC endpoints, Route53 zones, and EC2 instance.
-
 ## Adding VPC Endpoints for Additional Services
 
 The base configuration includes endpoints for Console, Signin, and Systems Manager. You can easily add endpoints for other AWS services like Lambda, API Gateway, DynamoDB, and more.
@@ -396,7 +386,7 @@ Add VPC endpoints for Lambda and API Gateway
 ```
 
 I will:
-1. Look up the exact VPC endpoint service names via AWS documentation
+1. Use AWS documentation to look up the exact VPC endpoint service names
 2. Generate endpoint code following the same pattern as existing endpoints
 3. Enable private DNS for automatic DNS resolution
 4. Apply restrictive endpoint policies (limited to your AWS account)
@@ -411,7 +401,51 @@ Many AWS services support VPC endpoints, including:
 
 See the [Add VPC Endpoints Guide](steering/add-vpc-endpoints.md) for more details and examples.
 
+## Cost Analysis
+
+Before deploying, you can estimate the costs of this infrastructure using the AWS Pricing MCP server.
+
+### Estimating Your Costs
+
+To estimate costs for your infrastructure:
+
+```
+What will this infrastructure cost to deploy and maintain?
+```
+
+I will use the AWS Pricing MCP server to:
+1. Query pricing for all infrastructure components (VPC endpoints, NAT Gateway, EC2 instance, Route53)
+2. Calculate costs based on your region and configuration
+3. Provide a detailed cost breakdown
+4. Suggest cost optimization strategies
+
+### Cost Components
+
+The infrastructure includes:
+- **VPC Endpoints** - Interface endpoints for Console, Signin, SSM, EC2Messages, SSMMessages, plus any additional services
+- **Gateway Endpoint** - S3 gateway endpoint
+- **NAT Gateway** - For private subnet egress
+- **EC2 Instance** - Windows Server instance (t3.medium by default)
+- **Route53** - Private hosted zones for DNS resolution
+
+### Cost Optimization
+
+To reduce costs:
+- Use Gateway endpoints for S3 (already included) to reduce NAT Gateway data transfer
+- Consolidate endpoints if possible
+- Consider reserved instances for long-term deployments
+- Monitor usage with VPC Flow Logs
+- Remove unused endpoints
+
 ## Cleanup
+
+When you're done testing, destroy the stack to avoid ongoing charges:
+
+```bash
+npx cdk destroy --region $AWS_REGION
+```
+
+This removes all resources created by the stack, including the VPC, VPC endpoints, Route53 zones, and EC2 instance.
 
 ## Useful Commands
 
